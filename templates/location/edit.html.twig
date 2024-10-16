@@ -1,0 +1,14 @@
+{# templates/location/edit.html.twig #}
+
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Edit Location</h1>
+
+    {{ form_start(form) }}
+        {{ form_widget(form) }}
+        <button class="btn btn-success">Save changes</button>
+    {{ form_end(form) }}
+
+    <a href="{{ path('app_location_index') }}">Back to list</a>
+{% endblock %}

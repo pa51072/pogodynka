@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Lokalizacje{% endblock %}
+
+{% block body %}
+    <h1>Locations</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Miasto</th>
+                <th>Państwo</th>
+                <th>Szerokość</th>
+                <th>Długość</th>
+                <th>Akcje</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for location in locations %}
+                <tr>
+                    <td>{{ location.city }}</td>
+                    <td>{{ location.country }}</td>
+                    <td>{{ location.latitude }}</td>
+                    <td>{{ location.longtitude }}</td>
+                    <td>
+                        <a href="{{ path('app_location_show', { 'id': location.id }) }}">Show</a>
+                        <a href="{{ path('app_location_edit', { 'id': location.id }) }}">Edit</a>
+                        <form method="post" action="{{ path('app_location_delete', { 'id': location.id }) }}" style="display:inline;">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ location.id) }}">
+                            <button type="submit">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_location_new') }}">Add location</a>
+{% endblock %}

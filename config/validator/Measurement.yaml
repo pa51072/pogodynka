@@ -1,0 +1,11 @@
+App\Entity\Measurement:
+    properties:
+        location:
+            - NotBlank: ~
+        date:
+            - NotBlank: ~
+        temperature:
+            - NotBlank: ~
+            - Range:
+                min: -100
+                max: 100
