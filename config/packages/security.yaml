@@ -4,7 +4,19 @@ security:
         Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
     # https://symfony.com/doc/current/security.html#loading-the-user-the-user-provider
     providers:
-        users_in_memory: { memory: null }
+        users_in_memory:
+            memory:
+                users:
+                    admin:
+                        password: '$2y$13$hXHRt8bMDUQI65JJweSjqOM3VPmwe7cj1d1FaGxw3Qt8P2iKXdWGe'
+                        roles:
+                            - 'ROLE_ADMIN'
+                            - 'ROLE_USER'
+                    user:
+                        password: '$2y$13$u2sJ8L/SO9mIMCwWREduiOH/a2L7u0HVCqG2qFfaAMos54NTkgIdq'
+                        roles:
+                            - 'ROLE_USER'
+
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
@@ -12,6 +24,11 @@ security:
         main:
             lazy: true
             provider: users_in_memory
+            form_login:
+                login_path: app_login
+                check_path: app_login
+            logout:
+                path: app_logout
 
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#the-firewall
@@ -22,8 +39,25 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
-        # - { path: ^/admin, roles: ROLE_ADMIN }
-        # - { path: ^/profile, roles: ROLE_USER }
+        #- { path: ^/admin, roles: ROLE_ADMIN }
+        #- { path: ^/profile, roles: ROLE_USER }
+        - { path: ^/, roles: PUBLIC_ACCESS }
+
+    role_hierarchy:
+        ROLE_ADMIN:
+            - ROLE_USER
+            - ROLE_LOCATION_EDIT
+            - ROLE_LOCATION_DELETE
+            - ROLE_LOCATION_NEW
+            - ROLE_LOCATION_SHOW
+            - ROLE_MEASUREMENT_NEW
+            - ROLE_MEASUREMENT_EDIT
+            - ROLE_MEASUREMENT_DELETE
+            - ROLE_MEASUREMENT_SHOW
+        ROLE_USER:
+            - ROLE_LOCATION_INDEX
+            - ROLE_MEASUREMENT_INDEX
+
 
 when@test:
     security:

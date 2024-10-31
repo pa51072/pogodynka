@@ -22,11 +22,15 @@
                 <td>{{ measurement.temperature }} °C</td>
                 <td>
                     <a href="{{ path('app_measurement_show', {'id': measurement.id}) }}">Show</a>
-                    <a href="{{ path('app_measurement_edit', {'id': measurement.id}) }}">Edit</a>
-                    <form method="post" action="{{ path('app_measurement_delete', {'id': measurement.id}) }}" style="display:inline;">
-                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ measurement.id) }}">
-                        <button class="btn btn-danger btn-sm" type="submit">Delete</button>
-                    </form>
+                    {% if is_granted('ROLE_LOCATION_EDIT') %}
+                        <a href="{{ path('app_measurement_edit', {'id': measurement.id}) }}">Edit</a>
+                    {% endif %}
+                    {% if is_granted('ROLE_LOCATION_DELETE') %}
+                        <form method="post" action="{{ path('app_measurement_delete', {'id': measurement.id}) }}" style="display:inline;">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ measurement.id) }}">
+                            <button class="btn btn-danger btn-sm" type="submit">Delete</button>
+                        </form>
+                    {% endif %}
                 </td>
             </tr>
         {% else %}
@@ -37,5 +41,7 @@
         </tbody>
     </table>
 
-    <a href="{{ path('app_measurement_new') }}">Create new</a>
+    {% if is_granted('ROLE_LOCATION_NEW') %}
+        <a href="{{ path('app_measurement_new') }}">Create new</a>
+    {% endif %}
 {% endblock %}

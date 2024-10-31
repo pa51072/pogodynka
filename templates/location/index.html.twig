@@ -1,39 +1,49 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Lokalizacje{% endblock %}
+{% block title %}Location index{% endblock %}
 
 {% block body %}
+
+
     <h1>Locations</h1>
 
-    <table>
+    <table class="table">
         <thead>
             <tr>
-                <th>Miasto</th>
-                <th>Państwo</th>
-                <th>Szerokość</th>
-                <th>Długość</th>
-                <th>Akcje</th>
+                <th>Id</th>
+                <th>City</th>
+                <th>Country</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
-            {% for location in locations %}
-                <tr>
-                    <td>{{ location.city }}</td>
-                    <td>{{ location.country }}</td>
-                    <td>{{ location.latitude }}</td>
-                    <td>{{ location.longtitude }}</td>
-                    <td>
-                        <a href="{{ path('app_location_show', { 'id': location.id }) }}">Show</a>
-                        <a href="{{ path('app_location_edit', { 'id': location.id }) }}">Edit</a>
-                        <form method="post" action="{{ path('app_location_delete', { 'id': location.id }) }}" style="display:inline;">
+        {% for location in locations %}
+            <tr>
+                <td>{{ location.id }}</td>
+                <td>{{ location.city }}</td>
+                <td>{{ location.country }}</td>
+                <td>
+                    <a href="{{ path('app_location_show', {'id': location.id}) }}">Show</a>
+                    {% if is_granted('ROLE_LOCATION_EDIT') %}
+                        <a href="{{ path('app_location_edit', {'id': location.id}) }}">Edit</a>
+                    {% endif %}
+                    {% if is_granted('ROLE_LOCATION_DELETE') %}
+                        <form method="post" action="{{ path('app_location_delete', {'id': location.id}) }}" style="display:inline;">
                             <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ location.id) }}">
-                            <button type="submit">Delete</button>
+                            <button class="btn btn-danger btn-sm" type="submit">Delete</button>
                         </form>
-                    </td>
-                </tr>
-            {% endfor %}
+                    {% endif %}
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4">No records found</td>
+            </tr>
+        {% endfor %}
         </tbody>
     </table>
 
-    <a href="{{ path('app_location_new') }}">Add location</a>
+    {% if is_granted('ROLE_LOCATION_NEW') %}
+        <a href="{{ path('app_location_new') }}">Create new</a>
+    {% endif %}
 {% endblock %}
