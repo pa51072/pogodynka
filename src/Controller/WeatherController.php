@@ -15,20 +15,14 @@ class WeatherController extends AbstractController
     public function city(string $city, string $country = null, LocationRepository $locationRepository, MeasurementRepository $repository): Response
     {
 
-        // Znajdź lokalizację na podstawie nazwy miejscowości i kodu państwa
-        if ($country) {
-            $location = $locationRepository->findOneBy(['city' => $city, 'country' => $country]);
-        } else {
-            $location = $locationRepository->findOneBy(['city' => $city]);
-        }
+        $location = $locationRepository->findOneByCityAndCountry($city, $countryCode);
 
-        // Sprawdź, czy lokalizacja została znaleziona
         if (!$location) {
             throw $this->createNotFoundException('Location not found');
         }
 
         // Pobierz pomiary dla znalezionej lokalizacji
-        $measurements = $repository->findByLocation($location);
+        $measurements = $util->getWeatherForLocation($location);
 
         return $this->render('weather/city.html.twig', [
             'location' => $location,
